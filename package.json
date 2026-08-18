@@ -3,7 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "test:qa": "cross-env ENV=qa playwright test",
+    "test:prod": "cross-env ENV=prod playwright test",
+    "test:dev": "cross-env ENV=dev playwright test"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/QA-abhi3011/playwright-automation-framework.git"
@@ -20,6 +24,7 @@
     "@playwright/test": "^1.62.1",
     "@types/node": "^26.2.0",
     "allure-playwright": "^3.10.2",
+    "cross-env": "^10.1.0",
     "eslint": "^10.8.1",
     "prettier": "^3.9.6"
   },

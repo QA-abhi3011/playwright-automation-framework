@@ -1,4 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
+import { EnvironmentManager } from './src/core/EnvironmentManager';
+
+EnvironmentManager.loadEnvironment();
 
 /**
  * Read environment variables from file.
