@@ -5,7 +5,7 @@ export class BrowserManager {
         private browser: Browser,
         private context: BrowserContext,
         private page: Page,
-    ) { }
+    ) {}
 
     getBrowser(): Browser {
         return this.browser;

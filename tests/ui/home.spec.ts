@@ -1,6 +1,7 @@
 import { test, expect } from '../../src/fixtures/testFixtures';
 import { HomePage } from '../../src/pages/HomePage';
 import { EnvironmentManager } from '../../src/core/EnvironmentManager';
+import { BrowserManager } from '../../src/core/BrowserManager';
 
 
 test('@smoke Verify application is accessible', async({ browserManager }) =>{
@@ -15,3 +16,4 @@ test('@smoke Verify application is accessible', async({ browserManager }) =>{
     EnvironmentManager.getBaseURL()
   );
 });
+
