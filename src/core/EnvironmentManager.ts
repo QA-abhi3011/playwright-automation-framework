@@ -15,7 +15,7 @@ export class EnvironmentManager{
     }
 
     static getBaseURL(): string{
-        return process.env.BASE_URL || "";
+        return process.env.UI_BASE_URL || "";
     }
 
     static getEnvironment(): string{
