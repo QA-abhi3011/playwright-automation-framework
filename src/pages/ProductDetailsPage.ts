@@ -25,6 +25,14 @@ export class ProductDetailsPage extends BasePage {
     }
 
     /*
+     * Returns the  locator of the add to cart button 
+    */
+    private get addToCartBtn(): Locator{
+        return this.page.locator("#add");
+    }
+
+
+    /*
      * Returns the Product title and price
     */
     async getProductName(): Promise<string> {
@@ -33,6 +41,13 @@ export class ProductDetailsPage extends BasePage {
 
     async getProductPrice(): Promise<string> {
         return (await this.productPrice.textContent())?.trim() ?? "";
+    }
+
+    /*
+     * Adds the currently displayed product to the shopping cart. 
+    */
+    async addProductToCart(){
+        await this.addToCartBtn.click();
     }
 
     /*

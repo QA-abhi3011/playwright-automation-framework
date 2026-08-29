@@ -7,7 +7,7 @@ import { SearchPage } from "../../src/pages/SearchPage";
 
 
 
-test("@regression Verify search behaviou for a non existing product", async({ browserManager}) => {
+test("@regression Verify search behaviour for a non existing product", async({ browserManager}) => {
     const page = browserManager.getPage();
 
     const homePage = new HomePage(page);
