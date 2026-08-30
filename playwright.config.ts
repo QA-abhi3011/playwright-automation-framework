@@ -18,7 +18,7 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
-  /* Opt out of parallel tests on CI. */
+  /* Limit parallel workers on CI for stable resource usage. */
   workers: process.env.CI ? 2 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [
@@ -43,20 +43,34 @@ export default defineConfig({
 
   /* Configure projects for major browsers */
   projects: [
-    {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+  {
+    name: "chromium",
+    testMatch: /.*tests\/ui\/.*\.spec\.ts/,
+    use: {
+      ...devices["Desktop Chrome"],
     },
+  },
 
-    {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
+  {
+    name: "firefox",
+    testMatch: /.*tests\/ui\/.*\.spec\.ts/,
+    use: {
+      ...devices["Desktop Firefox"],
     },
+  },
 
-    {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
+  {
+    name: "webkit",
+    testMatch: /.*tests\/ui\/.*\.spec\.ts/,
+    use: {
+      ...devices["Desktop Safari"],
     },
+  },
+
+  {
+    name: "api",
+    testMatch: /.*tests\/api\/.*\.spec\.ts/,
+  },
 
     /* Test against mobile viewports. */
     // {
