@@ -1,6 +1,6 @@
 import { test, expect } from "../../src/fixtures/apiFixture";
 import { GitHubApiClient } from "../../src/api/clients/GitHubApiClient";
-import { GitHubUserSearchResponse } from "../../src/api/models/GitHubUserModels";
+import { GitHubUserSearchResponse, GitHubUserDetails } from "../../src/api/models/GitHubUserModels";
 import { apiSearchDataFactory } from "../../src/data/factories/apiSearchDataFactory";
 
 test("@smoke @regression Verify GitHub user search returns results", async ({ apiRequest }) => {
@@ -54,5 +54,39 @@ test("@regression Verify user search fails when query parameter is missing", asy
     expect(responseBody.message).toBeTruthy();
 
     expect(responseBody.errors.length).toBeGreaterThan(0);
-  }
-);
+  
+});
+
+test("@regression Verify user details can be retrieved from the search results", async({ apiRequest}) => {
+    const gitHubApiClient = new GitHubApiClient(apiRequest);
+
+    // Search for users and use the returned username
+    // in the user details endpoint.
+
+    const searchResponse = await gitHubApiClient.searchUsers("torvalds");
+
+    expect(searchResponse.status()).toBe(200);
+
+    const searchResponseBody = await searchResponse.json() as GitHubUserSearchResponse;
+
+    const username = searchResponseBody.items[0].login;
+
+    // Retrieve details for the user returned by the search API.
+
+    const userDetailsResponse = await gitHubApiClient.getUsers(username);
+
+    expect(userDetailsResponse.status()).toBe(200);
+
+    const userDetails = await userDetailsResponse.json() as GitHubUserDetails;
+
+    // Validate that both API responses refer to the same user.
+    expect(userDetails.login).toBe(username);
+
+    expect(userDetails.id).toBeGreaterThan(0);
+
+    expect(userDetails.avatar_url).toContain("github");
+
+    expect(userDetails.html_url).toContain(`github.com/${username}`);
+
+    expect(userDetails.type).toBeTruthy();
+});
