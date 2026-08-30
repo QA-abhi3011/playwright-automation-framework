@@ -26,4 +26,13 @@ export class GitHubApiClient {
     async getUsers(username: string): Promise<APIResponse>{
         return this.request.get(`/users/${username}`);
     }
+
+    /*
+     * Searches GitHub users without providing a search query.
+     * Used to validate API error handling for an invalid request. 
+    */
+
+    async searchUsersWithoutQuery(): Promise<APIResponse> {
+        return this.request.get("/search/users");
+    }
 }
