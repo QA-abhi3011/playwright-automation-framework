@@ -32,7 +32,10 @@ test.describe("Cart Functonality", () => {
         );
     })
 
-    test("@smoke @regression Verify product can be added to the cart", async () => {
+    test("@smoke @regression @knownIssue Verify product can be added to the cart", async () => {
+    // Known application issue:
+    // Cart drawer intermittently remains stuck on the loading spinner.
+    // Test retained to monitor the existing application defect.
         await productDetailsPage.addProductToCart();
 
         await navigation.verifyCartItemCount(1);
@@ -44,7 +47,10 @@ test.describe("Cart Functonality", () => {
         );
     });
 
-    test("@smoke @regression Verify product can be removed from cart", async () => {
+    test("@smoke @regression @knownIssue Verify product can be removed from cart", async () => {
+    // Known application issue:
+    // Cart drawer intermittently remains stuck on the loading spinner.
+    // Test retained to monitor the existing application defect.
         await productDetailsPage.addProductToCart();
 
         await navigation.navigateToCart();

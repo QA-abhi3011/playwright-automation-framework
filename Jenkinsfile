@@ -22,13 +22,19 @@ pipeline {
 
         stage('Run Tests') {
             steps {
-                bat 'npm test'
+                bat 'npm run test:ci'
             }
         }
     }
-        post {
+    post {
         always {
-            archiveArtifacts artifacts: 'test-results/**/*', allowEmptyArchive: true
+            script {
+                if (fileExists('test-results')) {
+                archiveArtifacts artifacts: 'test-results/**', allowEmptyArchive: true
+                } else {
+                echo 'No Playwright failure artifacts were generated.'
+                }
+            }
         }
     }
 }
