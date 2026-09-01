@@ -1,5 +1,12 @@
 pipeline {
     agent any
+        parameters {
+        choice(
+            name: 'ENVIRONMENT',
+            choices: ['qa', 'dev', 'prod'],
+            description: 'Select the target environment for test execution'
+        )
+        }
 
     stages {
         stage('Checkout') {
@@ -22,7 +29,7 @@ pipeline {
 
         stage('Run Tests') {
             steps {
-                bat 'npm run test:ci'
+                bat 'set ENV=%ENVIRONMENT% && npm run test:ci'
             }
         }
     }
@@ -30,9 +37,9 @@ pipeline {
         always {
             script {
                 if (fileExists('test-results')) {
-                archiveArtifacts artifacts: 'test-results/**', allowEmptyArchive: true
+                    archiveArtifacts artifacts: 'test-results/**', allowEmptyArchive: true
                 } else {
-                echo 'No Playwright failure artifacts were generated.'
+                    echo 'No Playwright failure artifacts were generated.'
                 }
             }
         }
