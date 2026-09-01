@@ -13,9 +13,11 @@ export class EnvironmentManager {
             process.cwd(), `config/env/.env.${this.env}`
         );
 
-        dotenv.config({ path: envFile });
+        dotenv.config({ path: envFile, override: true });
 
         console.log(`Environment Loaded: ${this.env}`);
+        console.log(`UI Base URL: ${process.env.UI_BASE_URL}`);
+        console.log(`API Base URL: ${process.env.API_BASE_URL}`);
     }
 
     /* 
