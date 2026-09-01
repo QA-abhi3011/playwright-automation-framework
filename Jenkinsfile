@@ -1,12 +1,13 @@
+/* groovylint-disable-next-line CompileStatic */
 pipeline {
     agent any
-        parameters {
+    parameters {
         choice(
             name: 'ENVIRONMENT',
             choices: ['qa', 'dev', 'prod'],
             description: 'Select the target environment for test execution'
         )
-        }
+    }
 
     stages {
         stage('Checkout') {
@@ -27,6 +28,15 @@ pipeline {
             }
         }
 
+        stage('Verify Environment Configuration') {
+            steps {
+                bat 'echo Selected Environment: %ENVIRONMENT%'
+                bat 'echo Environment File Content:'
+                bat 'type config\\env\\.env.%ENVIRONMENT%'
+                bat 'echo Environment Directory:'
+                bat 'dir config\\env /a'
+            }
+        }
         stage('Run Tests') {
             steps {
                 bat 'set ENV=%ENVIRONMENT% && npm run test:ci'
