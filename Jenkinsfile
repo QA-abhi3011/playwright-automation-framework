@@ -126,6 +126,15 @@ pipeline {
 
     post {
         always {
+
+            script {
+                if (fileExists('test-results/junit-results.xml')) {
+                    junit 'test-results/junit-results.xml'
+                } else {
+                    echo 'JUnit test results were not generated.'
+                }
+            }
+
             script {
                 if (fileExists('test-results')) {
                     archiveArtifacts(
