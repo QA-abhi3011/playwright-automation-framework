@@ -46,6 +46,24 @@ pipeline {
             }
         }
 
+        stage('Clean Previous Test Results') {
+            steps {
+                script {
+                    if (fileExists('allure-results')) {
+                        bat 'rmdir /s /q allure-results'
+                    }
+
+                    if (fileExists('test-results')) {
+                        bat 'rmdir /s /q test-results'
+                    }
+
+                    if (fileExists('allure-report')) {
+                        bat 'rmdir /s /q allure-report'
+                    }
+                }
+            }
+        }
+
         stage('Run Tests') {
             steps {
                 script {
