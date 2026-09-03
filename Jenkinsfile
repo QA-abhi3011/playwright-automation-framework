@@ -1,11 +1,18 @@
 /* groovylint-disable-next-line CompileStatic */
 pipeline {
     agent any
+
     parameters {
         choice(
             name: 'ENVIRONMENT',
             choices: ['qa', 'dev', 'prod'],
             description: 'Select the target environment for test execution'
+        )
+
+        choice(
+            name: 'TEST_SUITE',
+            choices: ['full', 'smoke', 'regression', 'ui', 'api'],
+            description: 'Select the test suite to execute'
         )
     }
 
@@ -34,7 +41,34 @@ pipeline {
 
         stage('Run Tests') {
             steps {
-                bat 'npx cross-env ENV=%ENV% npm run test:ci'
+                script {
+                    def testCommand
+
+                    switch (params.TEST_SUITE) {
+
+                        case 'smoke':
+                            testCommand = 'npm run test:ci:smoke'
+                            break
+
+                        case 'regression':
+                            testCommand = 'npm run test:ci:regression'
+                            break
+
+                        case 'ui':
+                            testCommand = 'npm run test:ci:ui'
+                            break
+
+                        case 'api':
+                            testCommand = 'npm run test:ci:api'
+                            break
+
+                        default:
+                            testCommand = 'npm run test:ci'
+                            break
+                    }
+
+                    bat "npx cross-env ENV=${params.ENVIRONMENT} ${testCommand}"
+                }
             }
         }
     }
