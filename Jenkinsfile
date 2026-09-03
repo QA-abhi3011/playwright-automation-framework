@@ -14,6 +14,12 @@ pipeline {
             choices: ['full', 'smoke', 'regression', 'ui', 'api'],
             description: 'Select the test suite to execute'
         )
+
+        choice(
+            name: 'BROWSER',
+            choices: ['all', 'chromium', 'firefox'],
+            description: 'Select the browser for UI test execution'
+        )
     }
 
     environment {
@@ -21,6 +27,7 @@ pipeline {
     }
 
     stages {
+
         stage('Checkout') {
             steps {
                 checkout scm
@@ -42,41 +49,89 @@ pipeline {
         stage('Run Tests') {
             steps {
                 script {
+
                     def testCommand
 
-                    switch (params.TEST_SUITE) {
+                    /*
+                     * API tests do not require browser selection.
+                     */
+                    if (params.TEST_SUITE == 'api') {
 
-                        case 'smoke':
-                            testCommand = 'npm run test:ci:smoke'
-                            break
+                        testCommand =
+                            'npx playwright test tests/api --project=api --grep-invert @knownIssue'
 
-                        case 'regression':
-                            testCommand = 'npm run test:ci:regression'
-                            break
+                    } else {
 
-                        case 'ui':
-                            testCommand = 'npm run test:ci:ui'
-                            break
+                        /*
+                         * Select the required test suite.
+                         */
+                        switch (params.TEST_SUITE) {
 
-                        case 'api':
-                            testCommand = 'npm run test:ci:api'
-                            break
+                            case 'smoke':
+                                testCommand =
+                                    'npx playwright test --grep @smoke --grep-invert @knownIssue'
+                                break
 
-                        default:
-                            testCommand = 'npm run test:ci'
-                            break
+                            case 'regression':
+                                testCommand =
+                                    'npx playwright test --grep @regression --grep-invert @knownIssue'
+                                break
+
+                            case 'ui':
+                                testCommand =
+                                    'npx playwright test tests/ui --grep-invert @knownIssue'
+                                break
+
+                            default:
+                                testCommand =
+                                    'npx playwright test --grep-invert @knownIssue'
+                                break
+                        }
+
+                        /*
+                         * Apply browser selection.
+                         */
+                        if (params.BROWSER == 'chromium') {
+
+                            testCommand += ' --project=chromium'
+
+                        } else if (params.BROWSER == 'firefox') {
+
+                            testCommand += ' --project=firefox'
+
+                        } else {
+
+                            testCommand +=
+                                ' --project=chromium --project=firefox'
+
+                            /*
+                             * Include API tests when running
+                             * the complete suite on all projects.
+                             */
+                            if (params.TEST_SUITE == 'full') {
+                                testCommand += ' --project=api'
+                            }
+                        }
                     }
 
+                    /*
+                     * cross-env ensures ENV works correctly
+                     * on Windows Jenkins and local environments.
+                     */
                     bat "npx cross-env ENV=${params.ENVIRONMENT} ${testCommand}"
                 }
             }
         }
     }
+
     post {
         always {
             script {
                 if (fileExists('test-results')) {
-                    archiveArtifacts artifacts: 'test-results/**', allowEmptyArchive: true
+                    archiveArtifacts(
+                        artifacts: 'test-results/**',
+                        allowEmptyArchive: true
+                    )
                 } else {
                     echo 'No Playwright failure artifacts were generated.'
                 }
