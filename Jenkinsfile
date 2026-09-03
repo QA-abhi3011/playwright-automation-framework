@@ -145,6 +145,18 @@ pipeline {
                     echo 'No Playwright failure artifacts were generated.'
                 }
             }
+
+            script {
+                if (fileExists('allure-results')) {
+                    allure([
+                    includeProperties: false,
+                    jdk: '',
+                    results: [[path: 'allure-results']]
+                    ])
+                } else {
+                echo 'Allure results were not generated.'
+                }
+            }
         }
     }
 }

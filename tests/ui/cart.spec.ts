@@ -32,7 +32,7 @@ test.describe("Cart Functonality", () => {
         );
     })
 
-    test("@smoke @regression @knownIssue Verify product can be added to the cart", async () => {
+    test("@smoke @regression @KnownIssue Verify product can be added to the cart", async () => {
     // Known application issue:
     // Cart drawer intermittently remains stuck on the loading spinner.
     // Test retained to monitor the existing application defect.
